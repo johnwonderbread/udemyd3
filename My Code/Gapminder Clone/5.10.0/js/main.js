@@ -29,6 +29,14 @@ var y = d3.scaleLinear()
 	.domain([0, 90])
 	.range([height, 0]);
 
+	// area formula
+var area = d3.scaleLinear()
+	.range([25*Math.PI, 1500*Math.PI])
+	.domain([2000, 1400000000]);
+
+	//continent coloring
+var continentColor = d3.scaleOrdinal(d3.schemePastel1);
+
 	// X label 
 g.append("text") 
 	.attr("y", height + 50)
@@ -63,19 +71,34 @@ g.append("g")
 	.attr("transform", "translate(0, " + height + ")") 
 	.call(xAxisCall);
 
-	//Y Axis Call
+//Y Axis Call
 var yAxisCall = d3.axisLeft(y);
 g.append("g")
 	.attr("class", "y axis") 
 	.call(yAxisCall);
 
-	// area formula
-var area = d3.scaleLinear()
-	.range([25*Math.PI, 1500*Math.PI])
-	.domain([2000, 1400000000]);
+//legend
+var legend = g.append("g")
+    .attr("transform", "translate(" + (width - 10) + 
+        "," + (height - 125) + ")");
 
-	//continent coloring
-var continentColor = d3.scaleOrdinal(d3.schemePastel1);
+var continents = ["Europe", "Asia", "Americas", "Africa"];
+
+continents.forEach(function(continent, i){
+	var legendRow = legend.append("g")
+		.attr("transform", "translate(0, " + (i * 20) + ")");
+	
+	legendRow.append("rect")
+		.attr("width", 10)
+		.attr("height", 10)
+		.attr("fill", continentColor(continent));
+	
+	legendRow.append("text")
+		.attr("x", -10)
+		.attr("y", 10)
+		.attr("text-anchor", "end")
+		.text(continent);
+});
 	
 d3.json("data/data.json").then(function(data){
 
